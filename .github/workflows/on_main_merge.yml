@@ -1,0 +1,24 @@
+name: On PR Merged into Develop
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+
+jobs:
+  test:
+    if: github.event.pull_request.merged
+    runs-on: ubuntu-latest
+    #    runs-on: self-hosted
+    steps:
+      - name: strip double quotes from PR body and title
+        run: |
+          echo 'PR_BODY<<EOF' >> $GITHUB_ENV
+          echo "${{github.event.pull_request.body}}" || sed 's/\"//g' >> $GITHUB_ENV
+          echo 'EOF' >> $GITHUB_ENV
+          echo 'PR_TITLE<<EOF' >> $GITHUB_ENV
+          echo "${{github.event.pull_request.title}}" || sed 's/\"//g' >> $GITHUB_ENV
+          echo 'EOF' >> $GITHUB_ENV
+      - name: show variables
+        run: echo $GITHUB_ENV
