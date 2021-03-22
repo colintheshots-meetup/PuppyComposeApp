@@ -21,12 +21,12 @@ jobs:
           with open('${{ github.event_path }}') as fh:
               event = json.load(fh)
           title = shlex.quote(event['pull_request']['title'])
-          stripped_title = re.sub("[\"\']", "", title)
+          stripped_title = re.sub("[\"\'\n\`]", "", title)
           body = shlex.quote(event['pull_request']['body'])
-          stripped_body = re.sub("[\"\']", "", body)
+          stripped_body = re.sub("[\"\'\n\`]", "", body)
           with open(os.environ['GITHUB_ENV'], 'a') as fh:
-              print(f'PR_TITLE>>EOF\n{stripped_title}\nEOF', file=fh)
-              print(f'PR_BODY>>EOF\n{stripped_body}\nEOF', file=fh)
+              print(f'PR_TITLE{stripped_title}', file=fh)
+              print(f'PR_BODY={stripped_body}', file=fh)
         shell: python3 {0}
       - name: show variables
         run: echo $GITHUB_ENV
