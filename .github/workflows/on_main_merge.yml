@@ -25,8 +25,8 @@ jobs:
           body = shlex.quote(event['pull_request']['body'])
           stripped_body = re.sub("[\"\']", "", body)
           with open(os.environ['GITHUB_ENV'], 'a') as fh:
-              print(f'PR_TITLE={stripped_title}', file=fh)
-              print(f'PR_BODY={stripped_body}', file=fh)
+              print(f'PR_TITLE>>EOF\n{stripped_title}\nEOF', file=fh)
+              print(f'PR_BODY>>EOF\n{stripped_body}\nEOF', file=fh)
         shell: python3 {0}
       - name: show variables
         run: echo $GITHUB_ENV
