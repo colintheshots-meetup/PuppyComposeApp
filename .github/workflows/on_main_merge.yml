@@ -12,13 +12,18 @@ jobs:
     runs-on: ubuntu-latest
     #    runs-on: self-hosted
     steps:
-      - name: strip quotes from PR body and title
+      - name: escape pull request title
         run: |
-          echo 'PR_BODY<<EOF' >> $GITHUB_ENV
-          echo "${{github.event.pull_request.body}}" | sed -e 's/[\"\']//g' >> $GITHUB_ENV
-          echo 'EOF' >> $GITHUB_ENV
-          echo 'PR_TITLE<<EOF' >> $GITHUB_ENV
-          echo "${{github.event.pull_request.title}}" | sed -e 's/[\"\']//g' >> $GITHUB_ENV
-          echo 'EOF' >> $GITHUB_ENV
+          import json
+          import os
+          import shlex
+          with open('${{ github.event_path }}') as fh:
+              event = json.load(fh)
+          title = shlex.quote(event['pull_request']['title'])
+          body = shlex.quote(event['pull_request']['body'])
+          with open(os.environ['GITHUB_ENV'], 'a') as fh:
+              print(f'PR_TITLE={title}', file=fh)
+              print(f'PR_BODY={body}', file=fh)
+        shell: python3 {0}
       - name: show variables
         run: echo $GITHUB_ENV
