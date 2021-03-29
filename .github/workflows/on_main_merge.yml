@@ -36,4 +36,4 @@ jobs:
         run: |
           MESSAGE="**PR merged to develop**: [${{ env.PR_TITLE }}]($PR_URL)\n**Link to build APK**: [APK]($APK_URL)"
           TICKETS=($(echo "${{ env.PR_TITLE }}" "${{ env.PR_BODY }}" | grep -oE '([0-9]{4,})' | sort -u || true))
-          echo "fakeAPIkey" "$MESSAGE" "$TICKETS[*]"
+          echo "fakeAPIkey" "$MESSAGE" "${TICKETS[*]}"
