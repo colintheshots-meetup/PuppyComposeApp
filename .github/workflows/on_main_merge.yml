@@ -22,11 +22,18 @@ jobs:
               event = json.load(fh)
           title = shlex.quote(event['pull_request']['title'])
           stripped_title = re.sub("[\"\'\n\`]", "", title)
+          stripped_title = re.sub("\#", "\\#", stripped_title)
           body = shlex.quote(event['pull_request']['body'])
           stripped_body = re.sub("[\"\'\n\`]", "", body)
+          stripped_body = re.sub("\#", "\\#", stripped_body)
           with open(os.environ['GITHUB_ENV'], 'a') as fh:
               print(f'PR_TITLE={stripped_title}', file=fh)
               print(f'PR_BODY={stripped_body}', file=fh)
         shell: python3 {0}
-      - name: show variables
-        run: echo $GITHUB_ENV
+      - name: Post APK link to Clubhouse ticket
+        env:
+          APK_URL: https://play.google.com/apps/test/RQ-Hkh9yy9Q/ahAIsfLrzvEgJsuWJuBuol2boUe9yohsUQDlYtOUY-J5t6hODoGdsL77S-ObankykUSgiq1CsiMFLIMqtbRs6wSoKG
+        run: |
+          MESSAGE="**PR merged to develop**: [${{ env.PR_TITLE }}]($PR_URL)\n**Link to build APK**: [APK]($APK_URL)"
+          TICKETS=($(echo "${{ env.PR_BODY }}" | grep -oE '([0-9]{4,})' || true))
+          echo "fakeAPIkey" "$MESSAGE" "$TICKETS"
