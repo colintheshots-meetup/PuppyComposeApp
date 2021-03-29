@@ -35,5 +35,5 @@ jobs:
           APK_URL: https://play.google.com/apps/test/RQ-Hkh9yy9Q/ahAIsfLrzvEgJsuWJuBuol2boUe9yohsUQDlYtOUY-J5t6hODoGdsL77S-ObankykUSgiq1CsiMFLIMqtbRs6wSoKG
         run: |
           MESSAGE="**PR merged to develop**: [${{ env.PR_TITLE }}]($PR_URL)\n**Link to build APK**: [APK]($APK_URL)"
-          TICKETS=($(echo "${{ env.PR_BODY }}" | grep -oE '([0-9]{4,})' || true))
+          TICKETS=($(echo "${{ env.PR_TITLE }}" "${{ env.PR_BODY }}" | grep -oE '([0-9]{4,})' | sort -u || true))
           echo "fakeAPIkey" "$MESSAGE" "$TICKETS"
